@@ -40,3 +40,21 @@ a {
     color-scheme: dark;
   }
 }
+
+.preview-section {
+  margin-top: 1rem;
+
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+main {
+  padding: 1rem;
+}
+
+button {
+  padding: 0.2rem 0.5rem;
+
+}
