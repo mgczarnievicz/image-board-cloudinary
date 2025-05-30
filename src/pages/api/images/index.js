@@ -33,10 +33,10 @@ export default async function handler(req, res) {
 			return res.status(200).json(posts);
 		case 'POST':
 			console.log('req.body: ', req.body);
-			const { title, description, file } = req.body;
+			const { title, description, image } = req.body;
 			console.log('title: ', title);
 			console.log('description: ', description);
-			console.log('file: ', file);
+			console.log('image: ', image);
 
 			return res.status(200).json({ message: 'POST request' });
 		case 'PUT':
