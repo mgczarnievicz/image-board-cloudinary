@@ -18,19 +18,26 @@ export default async function handler(req, res) {
 	);
 
 	if (!id) {
-		return res.status(400).json({ message: 'Post ID is required' });
+		return res
+			.status(400)
+			.json({ error: 'Error no Id', message: 'Post ID is required' });
 	}
 
 	if (!['GET', 'DELETE'].includes(req.method)) {
 		res.setHeader('Allow', ['GET', 'POST']);
-		return res.status(405).end(`Method ${req.method} Not Allowed`);
+		return res.status(405).json({
+			error: 'Method Error',
+			message: `Method ${req.method} Not Allowed`,
+		});
 	}
 
 	try {
 		await dbConnect();
 	} catch (error) {
 		console.error('Data Base:', error);
-		return res.status(500).json({ error: error.message });
+		return res
+			.status(500)
+			.json({ error: 'Error Connect DB', message: error.message });
 	}
 
 	switch (req.method) {
@@ -44,20 +51,35 @@ export default async function handler(req, res) {
 				}
 
 				// 2. Find the next post
-				const nextPost = await Post.findOne({
-					_id: { $gt: currentPost._id },
+				let nextPost = await Post.findOne({
+					createdAt: { $gt: currentPost.createdAt },
 				})
-					.sort({ _id: 1 }) // Sort ascending to get the very next one
-					.select('_id')
-					.limit(1);
+					.sort({ createdAt: 1 }) // Sort ascending to get the very next one
+					.select('_id');
 
 				// 3. Find the previous post
-				const previousPost = await Post.findOne({
-					_id: { $lt: currentPost._id },
+				let previousPost = await Post.findOne({
+					createdAt: { $lt: currentPost.createdAt },
 				})
-					.sort({ _id: -1 }) // Sort descending to get the very previous one
-					.select('_id')
-					.limit(1);
+					.sort({ createdAt: -1 }) // Sort descending to get the very previous one
+					.select('_id');
+
+				// Edge-cases  for circular navigation
+				if (!previousPost) {
+					console.log(
+						'Edge Case: No previous, fallback to most recent post'
+					);
+					previousPost = await Post.findOne()
+						.sort({ createdAt: -1 })
+						.select('_id');
+				}
+
+				if (!nextPost) {
+					console.log('Edge Case: No next, fallback to oldest post');
+					nextPost = await Post.findOne()
+						.sort({ createdAt: 1 })
+						.select('_id');
+				}
 
 				return res.status(200).json({
 					currentPost,
@@ -66,18 +88,32 @@ export default async function handler(req, res) {
 				});
 			} catch (error) {
 				console.error('Error fetching post and its neighbors:', error);
-				return res
-					.status(500)
-					.json({ message: 'Internal server error' });
+
+				return res.status(500).json({
+					error: 'Error Read DB',
+					message: error.message,
+				});
 			}
 
 		case 'POST':
-			return res.status(200).json({ message: 'POST request' });
+			return res.status(200).json({
+				error: 'Method Error',
+				message: 'POST request Not Allowed',
+			});
 		case 'PUT':
-			return res.status(200).json({ message: 'PUT request' });
+			return res.status(200).json({
+				error: 'Method Error',
+				message: 'PUT request Not Allowed',
+			});
 		case 'DELETE':
-			return res.status(200).json({ message: 'DELETE request' });
+			return res.status(200).json({
+				error: 'Method Error',
+				message: 'DELETE request Not Allowed',
+			});
 		default:
-			return res.status(405).json({ message: 'Method not allowed' });
+			return res.status(405).json({
+				error: 'Method Error',
+				message: 'Method not allowed Not Allowed',
+			});
 	}
 }

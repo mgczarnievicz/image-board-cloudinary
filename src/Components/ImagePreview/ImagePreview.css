@@ -1,8 +1,16 @@
 .card {
     width: 250px;
-    padding: 2%;
-    border: 1px solid black;
-    border-radius: 12px;
+    padding: 4% 2%;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
 
     text-align: center;
+}
+
+.card img {
+    border-radius: 5px 5px 0px 0px;
+}
+
+.card h1 {
+    color: var(--primary-dark-color);
 }

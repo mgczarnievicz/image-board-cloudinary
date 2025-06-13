@@ -17,33 +17,62 @@ export default async function handler(req, res) {
 
 	if (!['GET', 'POST'].includes(req.method)) {
 		res.setHeader('Allow', ['GET', 'POST']);
-		return res.status(405).end(`Method ${req.method} Not Allowed`);
+		return res.status(405).json({
+			error: 'Method Error',
+			message: `Method ${req.method} Not Allowed`,
+		});
 	}
 
 	try {
 		await dbConnect();
 	} catch (error) {
 		console.error('Data Base:', error);
-		return res.status(500).json({ error: error.message });
+		return res
+			.status(500)
+			.json({ error: 'Error Connect DB', message: error.message });
 	}
 
 	switch (req.method) {
 		case 'GET':
-			const posts = await Post.find();
-			return res.status(200).json(posts);
+			try {
+				const posts = await Post.find().sort({ createdAt: 1 });
+				return res.status(200).json(posts);
+			} catch (error) {
+				console.error('Data Base:', error);
+				return res.status(500).json({
+					error: 'Error Read DB',
+					message: error.message,
+				});
+			}
 		case 'POST':
 			console.log('req.body: ', req.body);
 			const { title, description, image } = req.body;
-			console.log('title: ', title);
-			console.log('description: ', description);
-			console.log('image: ', image);
 
-			return res.status(200).json({ message: 'POST request' });
+			try {
+				await Post.create({ title, description, url: image });
+				return res.status(200).json({ message: 'POST request' });
+			} catch (error) {
+				console.error('Data Base:', error);
+				return res.status(500).json({
+					error: 'Error Create DB',
+					message: error.message,
+				});
+			}
+
 		case 'PUT':
-			return res.status(200).json({ message: 'PUT request' });
+			return res.status(200).json({
+				error: 'Method Error',
+				message: 'PUT request Not Allowed',
+			});
 		case 'DELETE':
-			return res.status(200).json({ message: 'DELETE request' });
+			return res.status(200).json({
+				error: 'Method Error',
+				message: 'DELETE request Not Allowed',
+			});
 		default:
-			return res.status(405).json({ message: 'Method not allowed' });
+			return res.status(405).json({
+				error: 'Method Error',
+				message: 'Method not allowed Not Allowed',
+			});
 	}
 }

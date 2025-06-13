@@ -1,6 +1,18 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --white-color: #ffffff;
+  --black-color: #171717;
+  --primary-color: rgb(0, 142, 167);
+  --primary-dark-color: rgb(2, 82, 96);
+
+  --secondary-color: #81ecec;
+  --secondary-dark-color: #00cec9;
+
+  --header-height: 50px;
+  --footer-height: 84px;
+
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -13,6 +25,7 @@
 html,
 body {
   max-width: 100vw;
+  height: 100vh;
   overflow-x: hidden;
 }
 
@@ -41,13 +54,9 @@ a {
   }
 }
 
-.preview-section {
-  margin-top: 1rem;
+#__next {
+  min-height: 100vh;
 
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  gap: 1rem;
 }
 
 main {

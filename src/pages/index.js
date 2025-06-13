@@ -1,22 +1,25 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import localFont from 'next/font/local';
-import styles from '@/styles/Home.module.css';
 import useSWR from 'swr';
 import { useState } from 'react';
+import { CirclePlus } from 'lucide-react';
 
 import ImagePreview from '@/Components/ImagePreview/ImagePreview';
-import ImageForm from '@/Components/ImageForm/ImageForm';
-import Header from '@/Components/Header/Header';
+import AddImage from '@/Components/AddImage/AddImage';
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+import '../styles/Home.css';
 
 export default function Home() {
 	const [addImage, setAddImage] = useState(false);
-	const { data, error, isLoading } = useSWR('/api/images', fetcher);
-	if (error) return <div>failed to load</div>;
-	if (isLoading) return <div>loading...</div>;
+	const { data, error, isLoading } = useSWR('/api/images');
+
+	if (error || data?.error) return <div>Failed to load</div>;
+	if (isLoading) return <div>Loading...</div>;
 	console.log('data', data);
+
+	function onCloseAdd() {
+		setAddImage(!addImage);
+	}
+
 	return (
 		<>
 			<Head>
@@ -28,22 +31,29 @@ export default function Home() {
 				/>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
-			<Header />
+
 			<main>
-				<button onClick={() => setAddImage(!addImage)}>
-					Add New Image
-				</button>
-				{addImage && <ImageForm />}
 				<section className='preview-section'>
 					{data.map((image) => (
 						<ImagePreview
 							key={image._id}
 							title={image.title}
 							url={image.url}
+							id={image._id}
 						/>
 					))}
 				</section>
+				{addImage && <AddImage onCloseAdd={onCloseAdd} />}
 			</main>
+
+			<footer>
+				<CirclePlus
+					size={64}
+					absoluteStrokeWidth={true}
+					className='add-button'
+					onClick={() => setAddImage(!addImage)}
+				/>
+			</footer>
 		</>
 	);
 }
