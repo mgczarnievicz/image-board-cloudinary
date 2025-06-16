@@ -2,6 +2,7 @@
 // import { data } from '@/lib/data';
 import dbConnect from '@/db/connect';
 import Post from '@/db/models/Post';
+import { deleteImage } from '@/utils/cloudinaryUtils';
 
 export default async function handler(req, res) {
 	const { id } = req.query;
@@ -106,10 +107,33 @@ export default async function handler(req, res) {
 				message: 'PUT request Not Allowed',
 			});
 		case 'DELETE':
-			return res.status(200).json({
-				error: 'Method Error',
-				message: 'DELETE request Not Allowed',
-			});
+			try {
+				const deletedPost = await Post.findByIdAndDelete(id);
+
+				if (!deletedPost) {
+					return res.status(500).json({
+						error: 'Error Deleting DB',
+						message: 'Post Not Found',
+					});
+				}
+				
+				// Delete Image From Cloudinary.
+				if (deletedPost.url.includes('cloudinary')) {
+					deleteImage(deletedPost.url);
+				}
+
+				return res.status(200).json({
+					status: 'Okay',
+				});
+			} catch (error) {
+				console.error('Error DELETING:', error);
+
+				return res.status(500).json({
+					error: 'Error DELETING DB',
+					message: error.message,
+				});
+			}
+
 		default:
 			return res.status(405).json({
 				error: 'Method Error',
