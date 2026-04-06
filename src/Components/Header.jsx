@@ -3,7 +3,7 @@ import SunIcon from './Icons/SunIcon';
 
 export default function Header() {
 	return (
-		<header className='bg-background border-b border-primary/15 px-8 py-5'>
+		<header className='bg-background px-8 py-5'>
 			<div className='flex items-center gap-3.5'>
 				<SunIcon />
 				<div>

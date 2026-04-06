@@ -1,51 +1,59 @@
-import {
-	ChevronRight,
-	ChevronLeft,
-	Pencil,
-	Trash2,
-	ArrowLeft,
-} from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
 import useSWR from 'swr';
 
-import Link from 'next/link';
 import ImageCard from '@/Components/ImageCard';
-
-import '../styles/DetailPage.css';
-import ImageForm from '@/Components/ImageForm/ImageForm';
+import CommentForm from '@/Components/CommentForm';
+import CommentList from '@/Components/CommentList';
 
 export default function DetailPage() {
 	const router = useRouter();
 	const { isReady } = router;
 	const { id } = router.query;
 
-	const { data, error, isLoading } = useSWR(`/api/images/${id}`);
+	const { data, error, isLoading, mutate } = useSWR(
+		isReady ? `/api/images/${id}` : null,
+	);
 
 	if (error || data?.error) return <div>Failed to load</div>;
 	if (!isReady || isLoading) return <h2>Loading...</h2>;
 
 	const { currentPost, nextPostId, previousPostId } = data;
 
-	function handleBackButton() {
-		router.push('/');
+	async function handleAddComment(commentData) {
+		const response = await fetch(`/api/images/${id}/comments`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(commentData),
+		});
+
+		if (response.ok) mutate();
 	}
 
 	return (
-		<main>
+		<main className='max-w-3xl mx-auto px-4 pb-16'>
 			<button
-				className='action-button back-button'
-				onClick={handleBackButton}>
-				<ArrowLeft />
-				Back
+				onClick={() => router.push('/')}
+				className='flex items-center gap-1 text-primary hover:text-primary-dark transition-colors duration-200 my-4 bg-transparent border-none cursor-pointer'>
+				<ArrowLeft size={18} />
+				<span>Back</span>
 			</button>
+
 			<ImageCard
 				previousPostId={previousPostId}
 				nextPostId={nextPostId}
 				currentPost={currentPost}
 			/>
-			<section>
-				<h1>Comments</h1>
+
+			<section className='mt-10 border-t border-primary/20 pt-8 flex flex-col gap-6'>
+				<h2 className='text-primary text-xl font-medium'>Comments</h2>
+				<CommentList comments={currentPost.comments} />
+				<div className='border-t border-primary/20 pt-6'>
+					<h3 className='text-primary/70 text-sm mb-3'>
+						Leave a comment
+					</h3>
+					<CommentForm onSubmit={handleAddComment} />
+				</div>
 			</section>
 		</main>
 	);

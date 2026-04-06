@@ -1,22 +1,9 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-// import { data } from '@/lib/data';
 import dbConnect from '@/db/connect';
 import Post from '@/db/models/Post';
-import { deleteImage } from '@/utils/cloudinaryUtils';
+import { deleteImage, uploadImage } from '@/utils/cloudinaryUtils';
 
 export default async function handler(req, res) {
 	const { id } = req.query;
-
-	console.log(
-		'------------------------------------------------------------------'
-	);
-	console.log('\t URL: ', req.url);
-	console.log('\t Method: ', req.method);
-	console.log('\t Id: ', id);
-
-	console.log(
-		'------------------------------------------------------------------'
-	);
 
 	if (!id) {
 		return res
@@ -24,8 +11,8 @@ export default async function handler(req, res) {
 			.json({ error: 'Error no Id', message: 'Post ID is required' });
 	}
 
-	if (!['GET', 'DELETE'].includes(req.method)) {
-		res.setHeader('Allow', ['GET', 'POST']);
+	if (!['GET', 'DELETE', 'PUT'].includes(req.method)) {
+		res.setHeader('Allow', ['GET', 'DELETE', 'PUT']);
 		return res.status(405).json({
 			error: 'Method Error',
 			message: `Method ${req.method} Not Allowed`,
@@ -35,7 +22,6 @@ export default async function handler(req, res) {
 	try {
 		await dbConnect();
 	} catch (error) {
-		console.error('Data Base:', error);
 		return res
 			.status(500)
 			.json({ error: 'Error Connect DB', message: error.message });
@@ -44,39 +30,28 @@ export default async function handler(req, res) {
 	switch (req.method) {
 		case 'GET':
 			try {
-				// 1. Get the current post
 				const currentPost = await Post.findById(id);
-
-				if (!currentPost) {
+				if (!currentPost)
 					return res.status(404).json({ message: 'Post not found' });
-				}
 
-				// 2. Find the next post
 				let nextPost = await Post.findOne({
 					createdAt: { $gt: currentPost.createdAt },
 				})
-					.sort({ createdAt: 1 }) // Sort ascending to get the very next one
+					.sort({ createdAt: 1 })
 					.select('_id');
 
-				// 3. Find the previous post
 				let previousPost = await Post.findOne({
 					createdAt: { $lt: currentPost.createdAt },
 				})
-					.sort({ createdAt: -1 }) // Sort descending to get the very previous one
+					.sort({ createdAt: -1 })
 					.select('_id');
 
-				// Edge-cases  for circular navigation
 				if (!previousPost) {
-					console.log(
-						'Edge Case: No previous, fallback to most recent post'
-					);
 					previousPost = await Post.findOne()
 						.sort({ createdAt: -1 })
 						.select('_id');
 				}
-
 				if (!nextPost) {
-					console.log('Edge Case: No next, fallback to oldest post');
 					nextPost = await Post.findOne()
 						.sort({ createdAt: 1 })
 						.select('_id');
@@ -84,60 +59,75 @@ export default async function handler(req, res) {
 
 				return res.status(200).json({
 					currentPost,
-					nextPostId: nextPost ? nextPost._id : null,
-					previousPostId: previousPost ? previousPost._id : null,
+					nextPostId: nextPost?._id ?? null,
+					previousPostId: previousPost?._id ?? null,
 				});
 			} catch (error) {
-				console.error('Error fetching post and its neighbors:', error);
-
-				return res.status(500).json({
-					error: 'Error Read DB',
-					message: error.message,
-				});
+				return res
+					.status(500)
+					.json({ error: 'Error Read DB', message: error.message });
 			}
 
-		case 'POST':
-			return res.status(200).json({
-				error: 'Method Error',
-				message: 'POST request Not Allowed',
-			});
 		case 'PUT':
-			return res.status(200).json({
-				error: 'Method Error',
-				message: 'PUT request Not Allowed',
-			});
+			try {
+				const { title, description, image } = req.body;
+
+				const updateData = { title, description };
+
+				// If a new image URL was already uploaded and passed in, use it
+				if (image) {
+					const existingPost = await Post.findById(id);
+					// Delete old image from Cloudinary if it exists
+					if (existingPost?.url?.includes('cloudinary')) {
+						await deleteImage(existingPost.url);
+					}
+					updateData.url = image;
+				}
+
+				const updatedPost = await Post.findByIdAndUpdate(
+					id,
+					{ $set: updateData },
+					{ new: true, runValidators: true },
+				);
+
+				if (!updatedPost) {
+					return res.status(404).json({ error: 'Post not found' });
+				}
+
+				return res.status(200).json(updatedPost);
+			} catch (error) {
+				return res
+					.status(500)
+					.json({ error: 'Error Update DB', message: error.message });
+			}
+
 		case 'DELETE':
 			try {
 				const deletedPost = await Post.findByIdAndDelete(id);
-
 				if (!deletedPost) {
-					return res.status(500).json({
-						error: 'Error Deleting DB',
-						message: 'Post Not Found',
-					});
+					return res
+						.status(404)
+						.json({
+							error: 'Error Deleting DB',
+							message: 'Post Not Found',
+						});
 				}
-				
-				// Delete Image From Cloudinary.
-				if (deletedPost.url.includes('cloudinary')) {
-					deleteImage(deletedPost.url);
+				if (deletedPost.url?.includes('cloudinary')) {
+					await deleteImage(deletedPost.url);
 				}
-
-				return res.status(200).json({
-					status: 'Okay',
-				});
+				return res.status(200).json({ status: 'Okay' });
 			} catch (error) {
-				console.error('Error DELETING:', error);
-
-				return res.status(500).json({
-					error: 'Error DELETING DB',
-					message: error.message,
-				});
+				return res
+					.status(500)
+					.json({
+						error: 'Error DELETING DB',
+						message: error.message,
+					});
 			}
 
 		default:
-			return res.status(405).json({
-				error: 'Method Error',
-				message: 'Method not allowed Not Allowed',
-			});
+			return res
+				.status(405)
+				.json({ error: 'Method Error', message: 'Method not allowed' });
 	}
 }

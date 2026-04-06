@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
 
 import ImagePreview from '@/Components/ImagePreview';
-import AddImage from '@/Components/AddImage/AddImage';
+import AddImage from '@/Components/AddImage';
 
 export default function Home() {
 	const [addImage, setAddImage] = useState(false);
