@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-@theme {
+:root {
   --background: #0F2C67;
   --foreground: #171717;
 
   --primary-color: #F4E185;
   --primary-dark-color: #F3950D;
 
-  --secondary-color: #CD1818;
+  --secondary-color: #045e5c;
   --secondary-dark-color: #00cec9;
 
   --red-color: red;
