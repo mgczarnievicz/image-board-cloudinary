@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 import useSWR from 'swr';
 
 import Link from 'next/link';
-import ImageCard from '@/Components/ImageCard/ImageCard';
+import ImageCard from '@/Components/ImageCard';
 
 import '../styles/DetailPage.css';
 import ImageForm from '@/Components/ImageForm/ImageForm';

@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { useState } from 'react';
 import { CirclePlus } from 'lucide-react';
 
-import ImagePreview from '@/Components/ImagePreview/ImagePreview';
+import ImagePreview from '@/Components/ImagePreview';
 import AddImage from '@/Components/AddImage/AddImage';
 
 export default function Home() {

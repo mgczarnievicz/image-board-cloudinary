@@ -1,5 +1,5 @@
 import React from 'react';
-import SunIcon from '../Icons/SunIcon';
+import SunIcon from './Icons/SunIcon';
 
 export default function Header() {
 	return (

@@ -1,5 +1,5 @@
 import { SWRConfig } from 'swr';
-import Header from '@/Components/Header/Header';
+import Header from '@/Components/Header';
 
 import '@/styles/globals.css';
 
