@@ -6,19 +6,12 @@ import { CirclePlus } from 'lucide-react';
 import ImagePreview from '@/Components/ImagePreview/ImagePreview';
 import AddImage from '@/Components/AddImage/AddImage';
 
-import '../styles/Home.css';
-
 export default function Home() {
 	const [addImage, setAddImage] = useState(false);
 	const { data, error, isLoading } = useSWR('/api/images');
 
 	if (error || data?.error) return <div>Failed to load</div>;
 	if (isLoading) return <div>Loading...</div>;
-	console.log('data', data);
-
-	function onCloseAdd() {
-		setAddImage(!addImage);
-	}
 
 	return (
 		<>
@@ -32,8 +25,13 @@ export default function Home() {
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 
-			<main>
-				<section className='preview-section'>
+			<main className='pb-24'>
+				<section
+					className='grid gap-5 p-8'
+					style={{
+						gridTemplateColumns:
+							'repeat(auto-fill, minmax(250px, 1fr))',
+					}}>
 					{data.map((image) => (
 						<ImagePreview
 							key={image._id}
@@ -43,17 +41,18 @@ export default function Home() {
 						/>
 					))}
 				</section>
-				{addImage && <AddImage onCloseAdd={onCloseAdd} />}
 			</main>
 
-			<footer>
+			<footer className='fixed bottom-0 w-full flex justify-end px-6 py-3'>
 				<CirclePlus
 					size={64}
-					absoluteStrokeWidth={true}
-					className='add-button'
+					absoluteStrokeWidth
+					className='text-primary bg-white rounded-full cursor-pointer hover:text-primary-dark transition-colors duration-200'
 					onClick={() => setAddImage(!addImage)}
 				/>
 			</footer>
+
+			{addImage && <AddImage onCloseAdd={() => setAddImage(false)} />}
 		</>
 	);
 }
