@@ -1,0 +1,61 @@
+export default function SunIcon({ size = 36 }) {
+	return (
+		<svg width={size} height={size} viewBox='0 0 36 36' fill='none'>
+			<circle cx='18' cy='22' r='10' fill='#F3950D' opacity='0.9' />
+			<rect
+				x='4'
+				y='21'
+				width='28'
+				height='2'
+				rx='1'
+				fill='#F4E185'
+				opacity='0.6'
+			/>
+			<line
+				x1='18'
+				y1='4'
+				x2='18'
+				y2='9'
+				stroke='#F4E185'
+				strokeWidth='1.5'
+				strokeLinecap='round'
+			/>
+			<line
+				x1='6'
+				y1='8'
+				x2='9.5'
+				y2='11.5'
+				stroke='#F4E185'
+				strokeWidth='1.5'
+				strokeLinecap='round'
+			/>
+			<line
+				x1='30'
+				y1='8'
+				x2='26.5'
+				y2='11.5'
+				stroke='#F4E185'
+				strokeWidth='1.5'
+				strokeLinecap='round'
+			/>
+			<line
+				x1='2'
+				y1='18'
+				x2='7'
+				y2='18'
+				stroke='#F4E185'
+				strokeWidth='1.5'
+				strokeLinecap='round'
+			/>
+			<line
+				x1='29'
+				y1='18'
+				x2='34'
+				y2='18'
+				stroke='#F4E185'
+				strokeWidth='1.5'
+				strokeLinecap='round'
+			/>
+		</svg>
+	);
+}
