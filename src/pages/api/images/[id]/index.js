@@ -105,24 +105,20 @@ export default async function handler(req, res) {
 			try {
 				const deletedPost = await Post.findByIdAndDelete(id);
 				if (!deletedPost) {
-					return res
-						.status(404)
-						.json({
-							error: 'Error Deleting DB',
-							message: 'Post Not Found',
-						});
+					return res.status(404).json({
+						error: 'Error Deleting DB',
+						message: 'Post Not Found',
+					});
 				}
 				if (deletedPost.url?.includes('cloudinary')) {
 					await deleteImage(deletedPost.url);
 				}
 				return res.status(200).json({ status: 'Okay' });
 			} catch (error) {
-				return res
-					.status(500)
-					.json({
-						error: 'Error DELETING DB',
-						message: error.message,
-					});
+				return res.status(500).json({
+					error: 'Error DELETING DB',
+					message: error.message,
+				});
 			}
 
 		default:

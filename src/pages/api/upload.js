@@ -15,12 +15,12 @@ const MAX_FILESIZE = MAX_MB * 1024 * 1024;
 
 export default async function handler(request, response) {
 	console.log(
-		'------------------------------------------------------------------'
+		'------------------------------------------------------------------',
 	);
 	console.log('\t URL: ', request.url);
 	console.log('\t Method: ', request.method);
 	console.log(
-		'------------------------------------------------------------------'
+		'------------------------------------------------------------------',
 	);
 
 	if (request.method !== 'POST') {

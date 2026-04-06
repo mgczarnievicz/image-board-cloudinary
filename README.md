@@ -1,67 +1,63 @@
-# Image Board App 🖼️
+# Sun Board 🌅
 
-An Instagram-like single-page application that allows users to upload, view, and comment on images. Open to all users without registration, this app is a lightweight clone of modern image-sharing platforms.
+A gallery app for sunset lovers. Upload, browse, and comment on sunset photos — no account needed.
 
 ## Running the Project
 
-1. Clone the repository.
+1. Clone the repository:
 
-2. Install dependencies.
+2. Install dependencies:
 
-3. Set up environment variables (`env.local`) for AWS credentials, S3 bucket and postgres:
-
-   ```env
-    MONGODB_URI=your_mongodb_uri
-
-
-    CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-    CLOUDINARY_API_KEY=your_cloudinary_api_key
-    CLOUDINARY_SECRET=your_cloudinary_secret
-    CLOUDINARY_FOLDER=your_cloudinary_folder
-    CLOUDINARY_UPLOAD_PRESET=your_cloudinary_upload
-    MAX_UPLOAD_SIZE_MB=your_max_size
+   ```bash
+   pnpm install
    ```
 
-4. Start the server:
+3. Set up environment variables — create a `.env.local` file in the project root:
+
+   ```env
+   MONGODB_URI=your_mongodb_uri
+
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_SECRET=your_cloudinary_secret
+   CLOUDINARY_FOLDER=your_cloudinary_folder
+   CLOUDINARY_UPLOAD_PRESET=your_cloudinary_upload_preset
+   MAX_UPLOAD_SIZE_MB=2
+   ```
+
+4. Start the development server:
 
    ```bash
    pnpm run dev
    ```
 
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
 ## Overview
 
-The Image Board App is a full-stack web application built with Next.js. It enables users to:
+Sun Board is a full-stack web application built with Next.js. It enables users to:
 
-- Upload images with titles and descriptions
-- View images in a masonry-style gallery
+- Upload sunset photos with a title and description
+- Browse photos in a responsive grid gallery
+- Navigate between posts with previous/next controls
 - Leave comments on individual posts
-- Automatically load more images with infinite scroll
-- Store uploaded files on Cloudinary
+- Edit or delete existing posts
 
-## Features
+## Tech Stack
 
-- 📸 Image upload with title & description
-- 💬 Commenting system
-- 🔄 Infinite scrolling for seamless UX
-- ☁️ Cloudinary image storage
-- ⚡ Fast and reactive UI with React
+[![My Skills](https://skillicons.dev/icons?i=nextjs,react,mongodb,tailwind)](https://skillicons.dev)
 
-## Technologies
-
-[![My Skills](https://skillicons.dev/icons?i=nextjs,css,mongodb,react)](https://skillicons.dev)
-
-- JavaScript
-- Next.js
-- React
-- MongoDB
-- Cloudinary
-
-<!--
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (Pages Router) |
+| UI | React, Tailwind CSS |
+| Database | MongoDB via Mongoose |
+| Image storage | Cloudinary |
+| Data fetching | SWR |
+| State management | React useState |
 
 ## Preview
 
-![Image Board Preview](preview.png) 
-
- Replace with your own screenshot
- 
-  -->
+<!--
+![Sun Board Preview](preview.png)
+-->

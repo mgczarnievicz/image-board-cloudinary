@@ -6,15 +6,6 @@ import Post from '@/db/models/Post';
 const CLOUDINARY_URL = process.env.CLOUDINARY_UR;
 
 export default async function handler(req, res) {
-	console.log(
-		'------------------------------------------------------------------'
-	);
-	console.log('\t URL: ', req.url);
-	console.log('\t Method: ', req.method);
-	console.log(
-		'------------------------------------------------------------------'
-	);
-
 	if (!['GET', 'POST'].includes(req.method)) {
 		res.setHeader('Allow', ['GET', 'POST']);
 		return res.status(405).json({
