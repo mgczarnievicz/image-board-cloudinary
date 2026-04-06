@@ -6,10 +6,8 @@ import './ImageForm.css';
 import localFont from 'next/font/local';
 
 export default function ImageForm({ onAddImage, error, setError, initValue }) {
-	// Assume these state variables are defined in your component:
 	const [imageFile, setImageFile] = useState(null);
 	const [imagePreview, setImagePreview] = useState(null);
-	// const [imageSrc, setImageSrc] = useState([]); // Use an array for multiple previews
 	const MAX_UPLOAD_SIZE_MB = 2; // Example: set this to your desired client-side max size
 
 	function handleImageChange(e) {
@@ -57,33 +55,51 @@ export default function ImageForm({ onAddImage, error, setError, initValue }) {
 
 	async function handleSubmit(event) {
 		event.preventDefault();
+		let imageFormData;
 
 		// 1. Validate that an image file is actually selected before attempting upload
-		if (!imageFile) {
+		if (!imageFile && !initValue) {
 			setError('Please select an image file to upload.');
 			return;
 		}
 
 		// 2. Create a FormData object for the image upload
-		const imageFormData = new FormData();
-		imageFormData.append('image', imageFile);
+		if (initValue && !imageFile) {
+			// There is no new image to send
+			imageFormData = false;
+		} else {
+			imageFormData = new FormData();
+			imageFormData.append('image', imageFile);
+		}
 
 		// 3. Grab Data from the Form fields
 		const formData = new FormData(event.target);
-		const data = Object.fromEntries(formData);
+		let data = Object.fromEntries(formData);
 
-		onAddImage(imageFormData, data);
+		if (initValue) {
+			data = { data, ...initValue };
+		}
+
+		onAddImage(data, imageFormData);
 	}
 
 	return (
 		<form onSubmit={handleSubmit}>
 			<label htmlFor='title'>Title</label>
-			<input type='text' name='title' id='title' />
+			<input
+				type='text'
+				name='title'
+				id='title'
+				defaultValue={initValue && initValue.title}
+			/>
 
 			<label htmlFor='description'>Description</label>
-			<textarea name='description' id='description'></textarea>
+			<textarea
+				name='description'
+				id='description'
+				defaultValue={initValue && initValue.description}></textarea>
 
-			<label>Select your file</label>
+			<label>{initValue ? 'Update image' : 'Add image'}</label>
 			<input
 				type='file'
 				name='image'
@@ -92,7 +108,7 @@ export default function ImageForm({ onAddImage, error, setError, initValue }) {
 			/>
 			{error && <p style={{ color: 'red' }}>{error}</p>}
 
-			<button type='submit'>Add</button>
+			<button type='submit'>{initValue ? 'Update' : 'Add'}</button>
 
 			{imagePreview && (
 				<div

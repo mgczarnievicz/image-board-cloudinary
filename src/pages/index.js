@@ -23,7 +23,7 @@ export default function Home() {
 	return (
 		<>
 			<Head>
-				<title>Create Next App</title>
+				<title>Sunset Board</title>
 				<meta name='description' content='Image Board' />
 				<meta
 					name='viewport'

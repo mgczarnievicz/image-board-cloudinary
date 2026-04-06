@@ -96,7 +96,22 @@
     background-color: gray;
 }
 
+.button-cancel {
 
+    /* The width is the total of the component minus the padding of the form */
+    width: calc(100% - 24px);
+    margin: 0px 12px;
+
+    color: var(--red-color);
+    background-color: var(--white-color);
+    border: 1px solid var(--red-color);
+}
+
+
+.button-cancel:hover {
+    color: var(--white-color);
+    background-color: var(--red-color);
+}
 
 @media (min-width: 900px) {
     .card-section {

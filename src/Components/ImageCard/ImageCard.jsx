@@ -38,8 +38,13 @@ export default function ImageCard({ previousPostId, nextPostId, currentPost }) {
 		router.push('/');
 	}
 
-	async function handleUpdate(){
+	async function handleUpdate(data, imageFormData) {
+		// Upload new Image if needed.
+		if(imageFormData){
 
+			// Delete Old Image if needed.
+		}
+		// Do the Update in DB.
 	}
 
 	return (
@@ -59,11 +64,18 @@ export default function ImageCard({ previousPostId, nextPostId, currentPost }) {
 						</>
 					)}
 					{editMode && (
-						<ImageForm
-							error={updateError}
-							setError={setUpdateError}
-							
-						/>
+						<>
+							<ImageForm
+								error={updateError}
+								setError={setUpdateError}
+								initValue={currentPost}
+							/>
+							<button
+								onClick={() => setEditMode(!editMode)}
+								className='button-cancel'>
+								Cancel
+							</button>
+						</>
 					)}
 				</div>
 				<Link href={`/${nextPostId}`} className='navigation-button'>

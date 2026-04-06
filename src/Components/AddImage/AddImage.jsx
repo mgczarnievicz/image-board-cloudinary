@@ -17,7 +17,7 @@ export default function AddImage({ onCloseAdd }) {
 		onCloseAdd();
 	}
 
-	async function handleAddImage(newImage, newData) {
+	async function handleAddImage(newData, newImage) {
 		try {
 			// Step 1: Upload Image
 			const responseImage = await fetch('/api/upload', {
