@@ -1,4 +1,4 @@
-# Sun Board 🌅
+# Sunset Board 🌅
 
 A gallery app for sunset lovers. Upload, browse, and comment on sunset photos — no account needed.
 
@@ -58,6 +58,22 @@ Sun Board is a full-stack web application built with Next.js. It enables users t
 
 ## Preview
 
-<!--
-![Sun Board Preview](preview.png)
--->
+### Home
+
+![Sun Board Preview Home](/previews/sunset-board-home-page.gif)
+
+### Upload Image
+
+![Sun Board Preview Upload Image](/previews/sunset-board-upload-image.gif)
+
+### Details
+
+![Sun Board Preview Details](/previews/sunset-board-preview.gif)
+
+### Comments
+
+![Sun Board Preview](/previews/sunset-board-comment.gif)
+
+### Edit
+
+![Sun Board Preview](/previews/sunset-board-edit.gif)
